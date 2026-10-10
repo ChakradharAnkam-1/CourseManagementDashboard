@@ -1,0 +1,11 @@
+{
+  "title": "pathpilot sih",
+  "description": "Empowers officials to upload and categorize training content while officers track skill gaps, access tailored courses, and complete MCQs to enhance competencies.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

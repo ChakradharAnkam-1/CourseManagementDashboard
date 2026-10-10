@@ -1,0 +1,142 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iGOT Karmayogi - Personalized Remedial Videos</title>
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --accent: #f39c12;
+            --bg: #f5f7fa;
+            --dark: #2c3e50;
+            --danger: #c62828;
+            --success: #27ae60;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg); color: var(--dark); min-height: 100vh; padding: 30px; }
+        
+        .nav-container { max-width: 1200px; margin: 0 auto 20px auto; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { background: #fff; border: 2px solid var(--primary); color: var(--primary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 14px; }
+        .back-btn:hover { background: var(--primary); color: white; }
+
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 6px solid var(--primary); }
+        .header h2 { color: var(--primary); font-size: 24px; margin-bottom: 8px; }
+        .header p { color: #666; font-size: 14px; margin-bottom: 25px; }
+
+        .gap-indicator-box { background: #ffebee; border: 1px solid #ffcdd2; border-radius: 8px; padding: 15px; margin-bottom: 30px; }
+        .gap-indicator-box h3 { font-size: 14px; color: var(--danger); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .gap-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+        .gap-pill { background: white; border: 1px solid #ffcdd2; color: var(--danger); font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        .video-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s, box-shadow 0.2s; }
+        .video-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.06); }
+        
+        .video-thumbnail { background: #2d3748; height: 170px; display: flex; justify-content: center; align-items: center; color: white; font-size: 44px; position: relative; }
+        .video-duration { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.85); color: white; font-size: 11px; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        
+        .video-info { padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .video-info h4 { font-size: 14px; color: var(--primary); font-weight: 700; margin-bottom: 6px; line-height: 1.4; }
+        .video-info p { font-size: 12px; color: #555; margin-bottom: 12px; line-height: 1.5; }
+        .skill-tag { display: inline-block; background: #feebc8; color: #c05621; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; width: fit-content; }
+        
+        .stream-btn { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; text-align: center; font-weight: bold; font-size: 12px; text-decoration: none; }
+        .no-videos-message { grid-column: 1 / -1; text-align: center; color: var(--success); padding: 40px 0; font-style: italic; font-size: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-container">
+        <!-- 🔗 Smooth browser history skip back to main page config -->
+        <a href="sampledemo.html" class="back-btn">← Back to Skill Audit</a>
+        <span style="font-size: 12px; font-weight: bold; color: #718096;">iGOT CAPACITY BUILDING ENGINE</span>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h2>Your Custom Video Training Catalog</h2>
+            <p>The AI Engine has filtered the database to present only the videos resolving your specific profile deficiencies.</p>
+        </div>
+
+        <div class="gap-indicator-box" id="gapDisplayPanel">
+            <h3 id="panelTitleText">Identified Skill Deficiencies (Found <span id="missedCount">0</span> gaps):</h3>
+            <div class="gap-pills" id="skillGapsTargetGrid"></div>
+        </div>
+
+        <div class="video-grid" id="filteredVideoGrid"></div>
+    </div>
+
+    <script>
+        const IGOT_VIDEO_DIRECTORY = [
+            { title: "🎬 Stratified Sampling Formulations & Variance Reductions", skill: "Stratified Random Sampling", desc: "Deep dive into spatial sampling matrices and handling layered allocations across divergent survey pools.", duration: "45:12" },
+            { title: "🎬 Modern Statistical Survey Design Frameworks", skill: "Survey Design Protocols", desc: "An advanced session detailing metadata architectures, boundary rules, and target tracking formulations.", duration: "1:12:40" },
+            { title: "🎬 Eliminating Systematic Errors in Field Enumerations", skill: "Field Data Quality Frameworks", desc: "Step-by-step guidance on implementing quality checks directly during ground-level data entry workflows.", duration: "38:15" },
+            { title: "🎬 Metadata Aggregation Guidelines & Taxonomy Standards", skill: "Metadata Standard Operations", desc: "Learn global taxonomy registration rules to structure statistical data feeds properly.", duration: "52:20" },
+            { title: "🎬 Domestic Product Tracking & National Accounts Registries", skill: "National Accounts Calculations", desc: "An explanatory masterclass on economic ledger structures, capital accounts, and microdata processing.", duration: "2:04:15" },
+            { title: "🎬 Compiling Constant-Price Indices & Price Adjustments", skill: "Price Deflator Indexes Compilation", desc: "Techniques to apply deflator metrics cleanly to strip out inflationary skews from production reporting.", duration: "1:05:00" },
+            { title: "🎬 Python Pandas DataFrames for Complex Cleaning Workflows", skill: "Python Automation Scripting", desc: "Automate raw file structural transforms, identify missing parameters, and merge multi-format tables.", duration: "1:48:30" },
+            { title: "🎬 GIS Grid Mapping Operations & Topology Visualizations", skill: "GIS Spatial Infrastructure Mapping", desc: "Learn to bind regional coordinates to census database layers for policy simulation reporting.", duration: "1:22:10" }
+        ];
+
+        document.addEventListener("DOMContentLoaded", function() {
+            let rawGapsData = sessionStorage.getItem("sih_calculated_gaps");
+            let missingSkillsArray = [];
+
+            if (rawGapsData) {
+                try {
+                    missingSkillsArray = JSON.parse(rawGapsData);
+                } catch(e) {
+                    console.error("Error decoding calculation array logs.", e);
+                }
+            }
+
+            const pillsContainer = document.getElementById('skillGapsTargetGrid');
+            const videoGrid = document.getElementById('filteredVideoGrid');
+            const missedCountSpan = document.getElementById('missedCount');
+
+            // Fallback display matrix if page is manually loaded without workflow trigger
+            if (!rawGapsData) {
+                missingSkillsArray = ["Stratified Random Sampling", "Python Automation Scripting"];
+            }
+
+            missedCountSpan.textContent = missingSkillsArray.length;
+
+            pillsContainer.innerHTML = '';
+            missingSkillsArray.forEach(skill => {
+                const pill = document.createElement('span');
+                pill.className = 'gap-pill';
+                pill.innerHTML = `⚠️ Missing: ${skill}`;
+                pillsContainer.appendChild(pill);
+            });
+
+            videoGrid.innerHTML = '';
+            let matchedVideosCount = 0;
+
+            IGOT_VIDEO_DIRECTORY.forEach(videoItem => {
+                if (missingSkillsArray.includes(videoItem.skill)) {
+                    matchedVideosCount++;
+                    const card = document.createElement('div');
+                    card.className = 'video-card';
+                    card.innerHTML = `
+                        <div class="video-thumbnail">📺<span class="video-duration">${videoItem.duration}</span></div>
+                        <div class="video-info">
+                            <div>
+                                <span class="skill-tag">Resolves: ${videoItem.skill}</span>
+                                <h4>${videoItem.title}</h4>
+                                <p>${videoItem.desc}</p>
+                            </div>
+                            <button class="stream-btn" onclick="alert('Streaming Integrated iGOT Media Node...')">Launch Stream</button>
+                        </div>
+                    `;
+                    videoGrid.appendChild(card);
+                }
+            });
+
+            if (matchedVideosCount === 0) {
+                videoGrid.innerHTML = `<div class="no-videos-message">🎉 0 Gaps found! You possess all relevant skills. No training pathways required.</div>`;
+                document.getElementById('gapDisplayPanel').style.backgroundColor = '#e8f5e9';
+                document.getElementById('gapDisplayPanel').style.borderColor = '#c8e6c9';
+                document.getElementById('panelTitleText').style.color = 'var(--success)';
+                document.getElementById('panelTitleText').innerHTML = 'Competency Profile Match:';

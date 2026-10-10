@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iGOT Karmayogi - Official Skill Audit Portal</title>
+    <style>
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #27ae60;
+            --danger: #c62828;
+            --bg: #f5f7fa;
+            --dark: #2c3e50;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg); color: var(--dark); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        
+        .container { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); border-top: 6px solid var(--primary); width: 100%; max-width: 550px; }
+        
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h2 { color: var(--primary); font-size: 24px; margin-bottom: 6px; }
+        .header p { color: #666; font-size: 13px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; }
+        .form-group select { width: 100%; padding: 12px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; background: #fff; cursor: pointer; }
+        .form-group select:focus { border-color: var(--secondary); }
+        
+        .checkbox-container { display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; padding: 14px; border: 2px solid #e2e8f0; border-radius: 6px; background: #f8fafc; margin-top: 5px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; padding: 4px 0; }
+        .checkbox-item input { width: 16px; height: 16px; cursor: pointer; }
+
+        button { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; border: none; padding: 14px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; font-size: 14px; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button:hover { opacity: 0.95; }
+
+        .audit-results { margin-top: 25px; padding: 20px; border-radius: 8px; display: none; animation: slideDown 0.3s ease-out; }
+        .audit-results.has-gaps { background-color: #ffebee; border: 1px solid #ffcdd2; }
+        .audit-results.no-gaps { background-color: #e8f5e9; border: 1px solid #c8e6c9; }
+        
+        .results-summary { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+        .audit-results.has-gaps .results-summary { color: var(--danger); }
+        .audit-results.no-gaps .results-summary { color: var(--success); }
+
+        .missed-list { list-style-type: none; padding-left: 0; }
+        .missed-list li { font-size: 13px; margin-bottom: 6px; color: #555; display: flex; align-items: center; gap: 6px; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h2>Official Competency Mapping</h2>
+            <p>Select your specific job role to check required skills and assess your gaps</p>
+        </div>
+
+        <!-- JOB ROLE SELECTION -->
+        <div class="form-group">
+            <label for="jobRole">Select Your Current Job Assignment</label>
+            <select id="jobRole" onchange="loadJobSkills()">
+                <option value="" disabled selected>-- Choose Assignment Track --</option>
+                <option value="survey">Field Surveyor & Sampling Specialist</option>
+                <option value="macro">Macroeconomic Data & Accounts Analyst</option>
+                <option value="tech">Data Processing & Technical System Operator</option>
+            </select>
+        </div>
+
+        <!-- DYNAMIC CHECKBOX CONTAINER -->
+        <div class="form-group" id="skillsSection" style="display: none;">
+            <label>Check the Skills You Already Possess:</label>
+            <div class="checkbox-container" id="skillsCheckboxList">
+                <!-- Dynamically filled by JavaScript -->
+            </div>
+            <button onclick="calculateMissedSkills()">Submit Skill Audit</button>
+        </div>
+
+        <!-- GAP ANALYSIS RESULTS ZONE -->
+        <div class="audit-results" id="auditResultsBox">
+            <div class="results-summary" id="resultsSummaryTitle"></div>
+            <ul class="missed-list" id="missedSkillsList"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Predefined skills mapping matrix for each specific job assignment as per problem statement
+        const JOB_SKILLS_DATABASE = {
+            "survey": [
+                "Survey Design Protocols",
+                "Stratified Random Sampling",
+                "Field Data Quality Frameworks",
+                "Metadata Standard Operations",
+                "Labour & Employment Statistics"
+            ],
+            "macro": [
+                "National Accounts Calculations",
+                "Price Deflator Indexes Compilation",
+                "Agricultural Crop Yield Analytics",
+                "Industrial Production Tracking (IIP)",
+                "SDG Indicator Mapping Metrics"
+            ],
+            "tech": [
+                "Python Automation Scripting",
+                "R Programming for Statistics",
+                "SQL Database Administration",
+                "GIS Spatial Infrastructure Mapping",
+                "Data Privacy Rules & Encryption"
+            ]
+        };
+
+        // Logic 1: Populates checkbox list dynamically based on chosen job role selection
+        function loadJobSkills() {
+            const selectedJob = document.getElementById('jobRole').value;
+            const checkboxListContainer = document.getElementById('skillsCheckboxList');
+            const skillsSection = document.getElementById('skillsSection');
+            const resultsBox = document.getElementById('auditResultsBox');
+            
+            // Clear out old states cleanly
+            checkboxListContainer.innerHTML = '';
+            resultsBox.style.display = 'none';
+
+            if (JOB_SKILLS_DATABASE[selectedJob]) {
+                // Fetch the concrete skills required for that exact assignment
+                const requiredSkills = JOB_SKILLS_DATABASE[selectedJob];
+                
+                requiredSkills.forEach(skillName => {
+                    const labelNode = document.createElement('label');
+                    labelNode.className = 'checkbox-item';
+                    labelNode.innerHTML = `
+                        <input type="checkbox" value="${skillName}">
+                        <span>${skillName}</span>
+                    `;
+                    checkboxListContainer.appendChild(labelNode);
+                });
+
+                // Display the checkbox container panel box area smoothly
+                skillsSection.style.display = 'block';
+            }
+        }
+
+        // Logic 2: Counts checked inputs, determines items missing, and reports metrics outputs
+        function calculateMissedSkills() {
+            const selectedJob = document.getElementById('jobRole').value;
+            const allRequiredSkills = JOB_SKILLS_DATABASE[selectedJob];
+            
+            // Extract tokens of whatever skills the user clicked as possessed
+            const checkedBoxes = document.querySelectorAll('#skillsCheckboxList input:checked');
+            const possessedSkills = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            // Subtract arrays to isolate missing elements out cleanly
+            const missedSkills = allRequiredSkills.filter(skill => !possessedSkills.includes(skill));
+            
+            const resultsBox = document.getElementById('auditResultsBox');
+            const summaryTitle = document.getElementById('resultsSummaryTitle');
+            const listContainer = document.getElementById('missedSkillsList');
+            
+            // Reset contents lists out cleanly
+            listContainer.innerHTML = '';
+
+            // 🔗 Save missing skills data pipeline to transfer over to sampledemo2.html
+            sessionStorage.setItem("sih_calculated_gaps", JSON.stringify(missedSkills));
+
+            if (missedSkills.length > 0) {
+                resultsBox.className = "audit-results has-gaps";
+                summaryTitle.innerHTML = `❌ Skill Audit Complete: You missed ${missedSkills.length} required skill(s).`;
+                
+                missedSkills.forEach(skill => {
+                    const itemNode = document.createElement('li');
+                    itemNode.innerHTML = `⚠️ <strong>Missing:</strong> ${skill}`;
+                    listContainer.appendChild(itemNode);
+                });
+            } else {
+                resultsBox.className = "audit-results no-gaps";
+                summaryTitle.innerHTML = "🎉 Excellent! 0 skills missed. You satisfy all structural profile criteria.";
+            }
+
+            resultsBox.style.display = 'block';
+
+            // ⏱️ Small delayed redirect timeout so users can see the summary layout count flash before switching views
+            setTimeout(() => {
+                window.location.href = "sampledemo2.html";
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

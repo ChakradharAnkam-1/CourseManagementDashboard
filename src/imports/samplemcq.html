@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Learning Assessment</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f5f7fb;
+        color: #1f2937;
+    }
+
+    /* NAVBAR */
+    .navbar {
+        height: 65px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 6%;
+    }
+
+    .logo {
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .logo span {
+        color: #2563eb;
+    }
+
+    .profile {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #2563eb;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+
+    /* MAIN */
+    .container {
+        width: 90%;
+        max-width: 1100px;
+        margin: 35px auto;
+    }
+
+    .heading {
+        margin-bottom: 25px;
+    }
+
+    .heading h1 {
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .heading p {
+        color: #6b7280;
+    }
+
+    /* UPLOAD CARD */
+    .upload-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        margin-bottom: 25px;
+    }
+
+    .upload-card h2 {
+        margin-bottom: 18px;
+        font-size: 20px;
+    }
+
+    .topic-input {
+        width: 100%;
+        padding: 13px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .topic-input:focus {
+        border-color: #2563eb;
+    }
+
+    /* DROP ZONE */
+    .drop-zone {
+        border: 2px dashed #9ca3af;
+        border-radius: 12px;
+        padding: 40px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .drop-zone:hover {
+        border-color: #2563eb;
+        background: #f8fbff;
+    }
+
+    .upload-icon {
+        font-size: 42px;
+        margin-bottom: 10px;
+    }
+
+    .drop-zone p {
+        color: #6b7280;
+        margin: 7px 0;
+    }
+
+    .browse {
+        color: #2563eb;
+        font-weight: bold;
+    }
+
+    #fileInput {
+        display: none;
+    }
+
+    /* FILE LIST */
+    .file-list {
+        margin-top: 20px;
+    }
+
+    .file-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        margin-top: 8px;
+    }
+
+    .file-name {
+        font-size: 14px;
+    }
+
+    .remove {
+        border: none;
+        background: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    /* BUTTON */
+    .send-btn {
+        margin-top: 20px;
+        width: 100%;
+        padding: 14px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 9px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .send-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .send-btn:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    /* AI PROCESSING */
+    .processing {
+        display: none;
+        background: white;
+        border-radius: 15px;
+        padding: 35px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .loader {
+        width: 45px;
+        height: 45px;
+        border: 5px solid #e5e7eb;
+        border-top: 5px solid #2563eb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: auto;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .processing h3 {
+        margin-top: 18px;
+    }
+
+    .processing p {
+        color: #6b7280;
+        margin-top: 8px;
+    }
+
+    /* QUIZ */
+    .quiz-section {
+        display: none;
+    }
+
+    .quiz-header {
+        background: white;
+        padding: 22px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+    }
+
+    .quiz-header h2 {
+        margin-bottom: 7px;
+    }
+
+    .question-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 18px;
+    }
+
+    .question-number {
+        color: #2563eb;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .question {
+        font-size: 17px;
+        font-weight: bold;
+        margin-bottom: 18px;
+    }
+
+    .option {
+        display: block;
+        padding: 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        margin: 8px 0;
+        cursor: pointer;
+    }
+
+    .option:hover {
+        background: #f3f6ff;
+    }
+
+    .option input {
+        margin-right: 10px;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 9px;
+        background: #16a34a;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-bottom: 30px;
+    }
+
+    /* RESULT */
+    .result {
+        display: none;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .score {
+        font-size: 40px;
+        font-weight: bold;
+        color: #2563eb;
+        margin: 15px 0;
+    }
+
+    @media(max-width:600px) {
+
+        .heading h1 {
+            font-size: 24px;
+        }
+
+        .container {
+            width: 94%;
+        }
+
+        .upload-card {
+            padding: 18px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+
+    <div class="logo">
+        Skill<span>Intelligence</span>
+    </div>
+
+    <div class="profile">
+        L
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <!-- HEADING -->
+    <div class="heading">
+
+        <h1>AI Learning Assessment</h1>
+
+        <p>
+            Upload learning material and let AI generate personalized MCQs.
+        </p>
+
+    </div>
+
+
+    <!-- UPLOAD -->
+    <div class="upload-card">
+
+        <h2>Send Learning Data</h2>
+
+        <input
+            type="text"
+            id="topic"
+            class="topic-input"
+            placeholder="Enter your desired learning topic..."
+        >
+
+        <div class="drop-zone" id="dropZone">
+
+            <div class="upload-icon">📚</div>
+
+            <strong>
+                Upload your learning material
+            </strong>
+
+            <p>
+                PDF, Images or MP4 videos
+            </p>
+
+            <p class="browse">
+                Click here to browse
+            </p>
+
+            <input
+                type="file"
+                id="fileInput"
+                multiple
+                accept=".pdf,image/*,video/mp4"
+            >
+
+        </div>
+
+
+        <div class="file-list" id="fileList"></div>
+
+
+        <button
+            class="send-btn"
+            id="sendBtn"
+            disabled
+        >
+            🤖 Send Data to AI
+        </button>
+
+    </div>
+
+
+    <!-- PROCESSING -->
+    <div class="processing" id="processing">
+
+        <div class="loader"></div>
+
+        <h3>AI is analyzing your material...</h3>
+
+        <p id="processingText">
+            Extracting learning content
+        </p>
+
+    </div>
+
+
+    <!-- QUIZ -->
+    <section class="quiz-section" id="quizSection">
+
+        <div class="quiz-header">
+
+            <h2 id="quizTitle">
+                AI Generated Assessment
+            </h2>
+
+            <p>
+                Answer the following questions based on your learning material.
+            </p>
+
+        </div>
+
+
+        <div id="questions"></div>
+
+
+        <button
+            class="submit-btn"
+            onclick="submitQuiz()"
+        >
+            Submit Assessment
+        </button>
+
+    </section>
+
+
+    <!-- RESULT -->
+    <div class="result" id="result">
+
+        <h2>Assessment Completed 🎉</h2>
+
+        <div class="score" id="score">
+            0/0
+        </div>
+
+        <p id="resultText"></p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const fileInput = document.getElementById("fileInput");
+const dropZone = document.getElementById("dropZone");
+const fileList = document.getElementById("fileList");
+const sendBtn = document.getElementById("sendBtn");
+const topicInput = document.getElementById("topic");
+
+let selectedFiles = [];
+
+
+/* OPEN FILE SELECTOR */
+
+dropZone.addEventListener("click", () => {
+
+    fileInput.click();
+
+});
+
+
+/* FILE SELECTION */
+
+fileInput.addEventListener("change", () => {
+
+    addFiles(fileInput.files);
+
+});
+
+
+/* ADD FILES */
+
+function addFiles(files) {
+
+    for (const file of files) {
+
+        const valid =
+            file.type === "application/pdf" ||
+            file.type.startsWith("image/") ||
+            file.type === "video/mp4";
+
+        if (!valid) {
+
+            alert(
+                file.name +
+                " is not supported. Upload PDF, image or MP4."
+            );
+
+            continue;
+
+        }
+
+        selectedFiles.push(file);
+
+    }
+
+    displayFiles();
+
+}
+
+
+/* DISPLAY FILES */
+
+function displayFiles() {
+
+    fileList.innerHTML = "";
+
+    selectedFiles.forEach((file, index) => {
+
+        const div = document.createElement("div");
+
+        div.className = "file-item";
+
+        div.innerHTML = `
+
+            <span class="file-name">
+                📄 ${file.name}
+            </span>
+
+            <button
+                class="remove"
+                onclick="removeFile(${index})"
+            >
+                Remove
+            </button>
+
+        `;
+
+        fileList.appendChild(div);
+
+    });
+
+
+    sendBtn.disabled =
+        selectedFiles.length === 0 ||
+        topicInput.value.trim() === "";
+
+}
+
+
+/* REMOVE FILE */
+
+function removeFile(index) {
+
+    selectedFiles.splice(index, 1);
+
+    displayFiles();
+
+}
+
+
+/* TOPIC VALIDATION */
+
+topicInput.addEventListener("input", () => {
+
+    sendBtn.disabled =
+        selectedFiles.length === 0 ||
+        topicInput.value.trim() === "";
+
+});
+
+
+/* SEND DATA */
+
+sendBtn.addEventListener("click", () => {
+
+    const topic = topicInput.value.trim();
+
+    if (!topic || selectedFiles.length === 0) {
+
+        alert("Enter a topic and upload learning material.");
+
+        return;
+
+    }
+
+
+    /* Hide upload card */
+
+    document.querySelector(".upload-card").style.display = "none";
+
+
+    /* Show AI processing */
+
+    document.getElementById("processing").style.display = "block";
+
+
+    const processingText =
+        document.getElementById("processingText");
+
+
+    const messages = [
+
+        "Reading uploaded learning material...",
+
+        "Extracting important concepts...",
+
+        "Understanding the learning content...",
+
+        "Generating MCQs using AI...",
+
+        "Validating generated questions...",
+
+        "Preparing your personalized assessment..."
+
+    ];
+
+
+    let i = 0;
+
+    const interval = setInterval(() => {
+
+        processingText.textContent =
+            messages[i];
+
+        i++;
+
+        if (i === messages.length) {
+
+            clearInterval(interval);
+
+            setTimeout(() => {
+
+                document.getElementById("processing")
+                    .style.display = "none";
+
+                generateQuiz(topic);
+
+            }, 700);
+
+        }
+
+    }, 900);
+
+});
+
+
+/* DEMO QUIZ DATA */
+
+const demoQuestions = [
+
+    {
+        question:
+            "Which of the following is an important component of statistical data analysis?",
+
+        options: [
+            "Data collection",
+            "Data analysis",
+            "Data interpretation",
+            "All of the above"
+        ],
+
+        answer: 3
+    },
+
+    {
+        question:
+            "Which technology can be used to automatically generate questions from learning material?",
+
+        options: [
+            "LLM",
+            "NLP",
+            "Artificial Intelligence",
+            "All of the above"
+        ],
+
+        answer: 3
+    },
+
+    {
+        question:
+            "What is the primary purpose of competency assessment?",
+
+        options: [
+            "Identify skill levels and gaps",
+            "Delete training records",
+            "Replace employees",
+            "Store passwords"
+        ],
+
+        answer: 0
+    },
+
+    {
+        question:
+            "Which technology can help match a learner with semantically relevant courses?",
+
+        options: [
+            "Semantic search",
+            "Image compression",
+            "File deletion",
+            "Screen recording"
+        ],
+
+        answer: 0
+    },
+
+    {
+        question:
+            "What can an adaptive learning system do?",
+
+        options: [
+            "Adjust learning recommendations based on performance",
+            "Only play videos",
+            "Delete assessments",
+            "Disable learning"
+        ],
+
+        answer: 0
+    }
+
+];
+
+
+let currentQuestions = [];
+
+
+/* GENERATE QUIZ */
+
+function generateQuiz(topic) {
+
+    currentQuestions = demoQuestions;
+
+    document.getElementById("quizTitle").textContent =
+        "AI Assessment — " + topic;
+
+    const questionsContainer =
+        document.getElementById("questions");
+
+    questionsContainer.innerHTML = "";
+
+
+    currentQuestions.forEach((q, index) => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "question-card";
+
+
+        let optionsHTML = "";
+
+        q.options.forEach((option, optionIndex) => {
+
+            optionsHTML += `
+
+                <label class="option">
+
+                    <input
+                        type="radio"
+                        name="question${index}"
+                        value="${optionIndex}"
+                    >
+
+                    ${option}
+
+                </label>
+
+            `;
+
+        });
+
+
+        card.innerHTML = `
+
+            <div class="question-number">
+                Question ${index + 1}
+            </div>
+
+            <div class="question">
+                ${q.question}
+            </div>
+
+            ${optionsHTML}
+
+        `;
+
+
+        questionsContainer.appendChild(card);
+
+    });
+
+
+    document.getElementById("quizSection")
+        .style.display = "block";
+
+}
+
+
+/* SUBMIT QUIZ */
+
+function submitQuiz() {
+
+    let score = 0;
+
+    currentQuestions.forEach((q, index) => {
+
+        const selected =
+            document.querySelector(
+                `input[name="question${index}"]:checked`
+            );
+
+
+        if (
+            selected &&
+            Number(selected.value) === q.answer
+        ) {
+
+            score++;
+
+        }
+
+    });
+
+
+    document.getElementById("score").textContent =
+        score + "/" + currentQuestions.length;
+
+
+    const percentage =
+        Math.round(
+            (score / currentQuestions.length) * 100
+        );
+
+
+    document.getElementById("resultText").textContent =
+        "You scored " +
+        percentage +
+        "%. Your assessment results can be used to identify competency gaps and improve future learning recommendations.";
+
+
+    document.getElementById("result")
+        .style.display = "block";
+
+
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+    });
+
+}
+
+</script>
+
+</body>
+</html>
